@@ -3,175 +3,205 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TabFlow - 告别标签页混乱 | 浏览器工作区管理器</title>
+  <meta name="description" content="TabFlow - 浏览器标签页工作区管理器。一键保存和恢复所有标签页，告别混乱。支持 Chrome/Edge。免费下载，Pro仅需¥9.9。">
+  <meta property="og:title" content="TabFlow - 告别标签页混乱">
+  <meta property="og:description" content="一键保存和恢复浏览器标签页工作区，支持 Chrome/Edge，纯本土支付">
+  <meta property="og:url" content="https://suanrong704.github.io/tabflow/">
+  <title>TabFlow - 浏览器标签页工作区管理器 | 一键保存 & 恢复</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🌊</text></svg>">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #1a1a2e; background: #f8f9fc; line-height: 1.6; }
-    .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 80px 20px; text-align: center; }
-    .hero h1 { font-size: 48px; font-weight: 800; margin-bottom: 16px; }
-    .hero p { font-size: 20px; opacity: 0.9; max-width: 600px; margin: 0 auto 32px; }
-    .btn { display: inline-block; padding: 14px 36px; border-radius: 12px; font-size: 16px; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.2s; border: none; }
+    .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 100px 20px 80px; text-align: center; }
+    .hero h1 { font-size: 42px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px; }
+    .hero .subtitle { font-size: 18px; opacity: 0.92; max-width: 520px; margin: 0 auto 36px; }
+    .hero .stats { display: flex; justify-content: center; gap: 32px; font-size: 13px; opacity: 0.7; margin-bottom: 32px; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 14px 32px; border-radius: 10px; font-size: 15px; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.2s; border: none; }
     .btn-primary { background: #ffd700; color: #1a1a2e; }
-    .btn-primary:hover { background: #ffed4a; transform: translateY(-1px); }
-    .btn-outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.5); margin-left: 12px; }
-    .btn-outline:hover { border-color: #fff; }
-    .section { padding: 60px 20px; max-width: 960px; margin: 0 auto; }
-    .section h2 { font-size: 32px; text-align: center; margin-bottom: 40px; }
-    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
-    .feature-card { background: #fff; padding: 28px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-    .feature-card .icon { font-size: 36px; margin-bottom: 12px; }
-    .feature-card h3 { font-size: 18px; margin-bottom: 8px; }
-    .feature-card p { font-size: 14px; color: #666; }
-    .pricing { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
-    .price-card { background: #fff; padding: 32px; border-radius: 12px; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-    .price-card.pro { border: 2px solid #667eea; position: relative; }
-    .price-card.pro::before { content: "推荐"; position: absolute; top: 12px; right: 12px; background: #667eea; color: #fff; padding: 2px 10px; border-radius: 8px; font-size: 12px; }
-    .price { font-size: 36px; font-weight: 800; margin: 16px 0; }
-    .price small { font-size: 14px; color: #999; font-weight: 400; }
-    .price-card ul { list-style: none; margin: 24px 0; }
-    .price-card li { padding: 6px 0; font-size: 14px; }
-    .install-guide { background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .btn-primary:hover { background: #ffe44d; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+    .btn-large { padding: 16px 40px; font-size: 17px; }
+    .section { padding: 70px 20px; max-width: 900px; margin: 0 auto; }
+    .section h2 { font-size: 28px; text-align: center; margin-bottom: 12px; }
+    .section .section-desc { text-align: center; color: #888; font-size: 15px; margin-bottom: 44px; }
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .feature-card { background: #fff; padding: 26px 22px; border-radius: 10px; box-shadow: 0 1px 6px rgba(0,0,0,0.05); transition: transform 0.15s; }
+    .feature-card:hover { transform: translateY(-2px); }
+    .feature-card .icon { font-size: 32px; margin-bottom: 10px; }
+    .feature-card h3 { font-size: 16px; margin-bottom: 6px; }
+    .feature-card p { font-size: 13px; color: #666; }
+    .pricing { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; max-width: 600px; margin: 0 auto; }
+    .price-card { background: #fff; padding: 32px 28px; border-radius: 12px; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+    .price-card.pro { border: 2px solid #667eea; position: relative; transform: scale(1.03); }
+    .price-card.pro::before { content: "推荐"; position: absolute; top: -10px; right: 14px; background: #667eea; color: #fff; padding: 3px 12px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+    .price { font-size: 40px; font-weight: 800; margin: 12px 0 4px; }
+    .price small { font-size: 13px; color: #999; font-weight: 400; }
+    .price-period { font-size: 12px; color: #999; margin-bottom: 16px; }
+    .price-card ul { list-style: none; margin: 20px 0 24px; text-align: left; display: inline-block; }
+    .price-card li { padding: 5px 0; font-size: 14px; }
+    .guarantee { text-align: center; font-size: 13px; color: #999; margin-top: 20px; }
+    .install-guide { background: #fff; padding: 28px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); max-width: 560px; margin: 0 auto; }
     .install-guide ol { padding-left: 20px; }
-    .install-guide li { margin-bottom: 8px; font-size: 14px; }
-    .install-guide code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
-    .footer { text-align: center; padding: 40px 20px; color: #999; font-size: 13px; }
-    .footer a { color: #667eea; }
-    .faq-item { margin-bottom: 24px; }
-    .faq-item h3 { font-size: 16px; margin-bottom: 6px; }
-    .faq-item p { color: #666; font-size: 14px; }
+    .install-guide li { margin-bottom: 10px; font-size: 14px; line-height: 1.6; }
+    .install-guide code { background: #f0f0f0; padding: 2px 7px; border-radius: 4px; font-size: 13px; }
+    .install-guide .note { margin-top: 14px; font-size: 12px; color: #999; }
+    .faq { max-width: 640px; margin: 0 auto; }
+    .faq-item { margin-bottom: 22px; }
+    .faq-item h3 { font-size: 15px; margin-bottom: 4px; }
+    .faq-item p { color: #555; font-size: 14px; }
+    .footer { text-align: center; padding: 40px 20px; color: #999; font-size: 13px; border-top: 1px solid #eee; }
+    .footer a { color: #667eea; text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+    .cta-section { text-align: center; padding: 50px 20px; background: linear-gradient(135deg, #f0f2ff 0%, #f8f0ff 100%); }
+    .cta-section h2 { font-size: 24px; margin-bottom: 8px; }
+    .cta-section p { color: #666; margin-bottom: 24px; }
+    .highlight { color: #667eea; font-weight: 700; }
   </style>
 </head>
 <body>
+
   <div class="hero">
-    <h1>🌊 标签页不再失控</h1>
-    <p>一键保存，随时恢复。支持 Chrome / Edge / 360 浏览器。</p>
-    <a href="#install" class="btn btn-primary">⬇ 免费安装</a>
-    <a href="#pricing" class="btn btn-outline">升级 Pro →</a>
+    <h1>🌊 标签页从此不再爆炸</h1>
+    <p class="subtitle">一个项目查资料打开30个标签页？一键保存为工作区，随时恢复。编程、写论文、做调研，切换项目只需点一下。</p>
+    <div class="stats">🟢 不到 50KB &nbsp;|&nbsp; 🔒 数据纯本地 &nbsp;|&nbsp; 💰 ¥9.9 终身</div>
+    <a href="#install" class="btn btn-primary btn-large">⬇ 免费下载使用</a>
   </div>
 
   <div class="section" id="install">
-    <h2>📥 安装方式</h2>
+    <h2>30 秒安装</h2>
+    <p class="section-desc">无需注册，无需商店审核，拖进去就能用</p>
     <div class="install-guide">
-      <h3>安装步骤</h3>
       <ol>
-        <li>下载 <a href="tabflow.zip">tabflow.zip</a> 并解压</li>
-        <li>浏览器地址栏输入 <code>chrome://extensions</code> 或 <code>edge://extensions</code></li>
-        <li>开启右上角「开发者模式」</li>
-        <li>点击「加载已解压的扩展程序」→ 选择解压后的文件夹</li>
+        <li>📥 下载 <a href="tabflow.zip" style="font-weight:600;color:#667eea;">tabflow.zip</a>，解压到任意文件夹</li>
+        <li>🌐 浏览器地址栏输入 <code>chrome://extensions</code>（Edge 用户输入 <code>edge://extensions</code>）</li>
+        <li>🔧 打开右上角「开发者模式」开关</li>
+        <li>📂 点击「加载已解压的扩展程序」，选择刚解压的文件夹</li>
+        <li>✅ 完成！浏览器右上角出现 🌊 图标</li>
       </ol>
+      <p class="note">支持 Chrome / Edge / 360浏览器 / 所有 Chromium 内核浏览器</p>
     </div>
   </div>
 
   <div class="section" id="features">
-    <h2>为什么选择 TabFlow？</h2>
+    <h2>解决真实痛点</h2>
+    <p class="section-desc">每个程序员和重度浏览器用户都懂</p>
     <div class="features">
       <div class="feature-card">
         <div class="icon">💾</div>
-        <h3>一键保存</h3>
-        <p>当前窗口所有标签页保存为一个工作区，不怕崩溃。</p>
+        <h3>一键保存工作区</h3>
+        <p>按 <code>Ctrl+Shift+S</code> 或点一下图标，当前窗口所有标签页全部保存。浏览器崩溃？不存在的。</p>
       </div>
       <div class="feature-card">
         <div class="icon">🔄</div>
         <h3>秒级恢复</h3>
-        <p>点击一下，之前保存的所有标签瞬间还原。</p>
+        <p>点一下恢复按钮，整个工作区的标签页全部回来。切换项目、换电脑，无缝衔接。</p>
       </div>
       <div class="feature-card">
-        <div class="icon">☁️</div>
-        <h3>云端同步</h3>
-        <p>工作区自动同步到浏览器账号，换电脑也不丢。</p>
+        <div class="icon">🏷️</div>
+        <h3>自定义命名</h3>
+        <p>给每个工作区取名字："论文调研""React学习""Bug跟踪"。想找哪个一目了然。</p>
       </div>
       <div class="feature-card">
-        <div class="icon">⌨️</div>
-        <h3>快捷键操作</h3>
-        <p>Ctrl+Shift+S 保存，Ctrl+Shift+E 切换，全程键盘。</p>
+        <div class="icon">🔒</div>
+        <h3>纯本地存储</h3>
+        <p>所有数据只在你电脑上，不经过任何服务器。我们根本看不到你的标签页。隐私就是默认设置。</p>
       </div>
       <div class="feature-card">
-        <div class="icon">🇨🇳</div>
-        <h3>国内友好</h3>
-        <p>纯人民币支付，爱发电收款，无需外币卡。</p>
+        <div class="icon">📦</div>
+        <h3>数据可导出</h3>
+        <p>随时导出为 JSON 文件备份。换电脑时导入就行，数据永远是你的。</p>
       </div>
       <div class="feature-card">
         <div class="icon">💡</div>
-        <h3>轻量隐私</h3>
-        <p>不到 50KB，数据只存你浏览器里，不上传任何服务器。</p>
+        <h3>极致轻量</h3>
+        <p>安装包不到 50KB，不占用内存，不拖慢浏览器。用完即走，毫无负担。</p>
       </div>
     </div>
   </div>
 
   <div class="section" id="pricing">
-    <h2>简单定价</h2>
+    <h2>直接定价，不玩套路</h2>
+    <p class="section-desc">免费版够用，Pro 版更爽</p>
     <div class="pricing">
       <div class="price-card">
         <h3>🆓 免费版</h3>
         <div class="price">¥0</div>
+        <div class="price-period">永久免费</div>
         <ul>
-          <li>✅ 10 个工作区</li>
-          <li>✅ 保存 & 恢复</li>
-          <li>✅ 云端同步</li>
-          <li>✅ 快捷键支持</li>
-          <li>❌ 无限工作区</li>
-          <li>❌ 自动备份</li>
+          <li>✅ 保存 & 恢复工作区</li>
+          <li>✅ 最多 10 个工作区</li>
+          <li>✅ 自定义命名</li>
+          <li>✅ 快捷键操作</li>
+          <li>✅ 数据导出备份</li>
+          <li>✅ 纯本地，无隐私风险</li>
         </ul>
-        <a href="#install" class="btn btn-outline" style="color:#667eea;border-color:#667eea;">免费安装</a>
+        <a href="#install" class="btn" style="width:100%;background:#eee;color:#1a1a2e;">免费下载</a>
       </div>
       <div class="price-card pro">
         <h3>⭐ Pro 版</h3>
-        <div class="price">¥9.9<small> / 终身</small></div>
+        <div class="price">¥9.9</div>
+        <div class="price-period">终身买断 · 一次付费</div>
         <ul>
-          <li>✅ 无限工作区</li>
-          <li>✅ 保存 & 恢复</li>
-          <li>✅ 许可证跨设备同步</li>
-          <li>✅ 快捷键支持</li>
+          <li>✅ 无限工作区数量</li>
+          <li>✅ 保存 & 恢复工作区</li>
+          <li>✅ 自定义命名</li>
+          <li>✅ 快捷键操作</li>
+          <li>✅ 数据导出备份</li>
+          <li>✅ 跨设备许可证同步</li>
         </ul>
-        <a href="#" class="btn btn-primary" onclick="buy(event)">¥9.9 立即购买（爱发电）</a>
+        <a href="#" class="btn btn-primary" style="width:100%;" onclick="buy(event)">¥9.9 立即购买</a>
       </div>
     </div>
+    <p class="guarantee">⚡ 支持微信 / 支付宝 &nbsp;|&nbsp; 不自动续费 &nbsp;|&nbsp; 一次性买断</p>
   </div>
 
-  <div class="section" id="faq">
+  <div class="cta-section">
+    <h2>一杯奶茶钱，浏览器从此清爽</h2>
+    <p>¥9.9 终身，平均每天不到 <span class="highlight">3 分钱</span></p>
+    <a href="#" class="btn btn-primary btn-large" onclick="buy(event)">🔥 升级 Pro</a>
+  </div>
+
+  <div class="section faq">
     <h2>常见问题</h2>
     <div class="faq-item">
-      <h3>只能用人民币吗？</h3>
-      <p>是的！通过爱发电收款，支持微信和支付宝，纯人民币交易。</p>
+      <h3>数据会传到你们的服务器吗？</h3>
+      <p>不会。所有工作区数据和标签页 URL 100% 存在你浏览器本地，我们连一个后端服务器都没有。许可证信息通过浏览器账号同步，但仅此而已。</p>
     </div>
     <div class="faq-item">
-      <h3>数据安全吗？</h3>
-      <p>所有数据只存在你的浏览器本地和浏览器账号同步存储里，不经过任何第三方服务器，我们根本看不到。</p>
+      <h3>Chrome 能用吗？Edge 能用吗？</h3>
+      <p>都支持。Chrome / Edge / 360 / Brave / Vivaldi —— 所有 Chromium 内核浏览器都能安装。</p>
     </div>
     <div class="faq-item">
-      <h3>Pro 是终身买断吗？</h3>
-      <p>是，¥9.9 一次付费永久使用，后续所有更新免费。</p>
+      <h3>Pro 是订阅制还是买断？</h3>
+      <p><strong>终身买断。</strong> ¥9.9 付一次，永久使用。没有自动续费，没有月费年费。后续所有更新免费。</p>
     </div>
     <div class="faq-item">
-      <h3>在 Chrome 上能用吗？</h3>
-      <p>可以！Edge 扩展和 Chrome 扩展技术上是同一套标准，直接在 Chrome 中加载即可使用。</p>
+      <h3>买了之后怎么激活 Pro？</h3>
+      <p>购买时在爱发电留言里留下邮箱 → 收到激活码 → 打开插件设置 → 输入邮箱和激活码 → 激活。24 小时内发货。</p>
     </div>
     <div class="faq-item">
-      <h3>买了之后怎么激活？</h3>
-      <p>购买时在爱发电留言中留下邮箱 → 24小时内收到激活码 → 打开插件设置 → 输入邮箱和激活码 → 点激活，Pro 生效。</p>
+      <h3>换电脑了许可证还有效吗？</h3>
+      <p>有效。使用同一个邮箱重新激活即可。许可证与邮箱绑定，不限设备。</p>
     </div>
-    
+    <div class="faq-item">
+      <h3>能退款吗？</h3>
+      <p>7 天内无条件退款。联系 tabflow@proton.me 即可。</p>
+    </div>
   </div>
 
   <div class="footer">
-    <p>© 2024 TabFlow | <a href="privacy.html">隐私政策</a> | 爱发电: <a href="https://afdian.com/a/suanrong">afdian.com/a/suanrong</a></p>
+    <p>
+      <a href="privacy.html">隐私政策</a> &nbsp;·&nbsp;
+      <a href="https://afdian.com/a/suanrong">爱发电</a> &nbsp;·&nbsp;
+      tabflow@proton.me
+    </p>
+    <p style="margin-top:6px">TabFlow v1.0 · 纯本地 · 无追踪 · 无广告</p>
   </div>
 
   <script>
     function buy(e) {
       e.preventDefault();
-      // ⚠️ 替换为你的爱发电商品链接
       window.open("https://afdian.com/a/suanrong", "_blank");
     }
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
