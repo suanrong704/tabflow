@@ -11,13 +11,16 @@
   <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
 </head>
 <body>
-  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <span class="sidebar-logo">🤖 <span>DeepClaude</span></span>
     </div>
     <div class="sidebar-actions">
       <button class="btn-new-chat" id="btnNewChat">➕ 新对话</button>
+    </div>
+    <div class="conv-search">
+      <input type="text" id="convSearchInput" placeholder="🔍 搜索对话..." />
+      <span class="conv-search-count" id="convCount"></span>
     </div>
     <div class="sidebar-conversations" id="convList"></div>
     <div class="sidebar-footer">
@@ -26,15 +29,16 @@
     </div>
   </aside>
 
-  <!-- Main -->
   <div class="main">
     <header class="header">
       <div class="header-left">
         <button class="btn-toggle-sidebar" id="btnToggleSidebar" title="切换侧边栏">☰</button>
+        <button class="search-toggle" id="btnSearchToggle" title="联网搜索">🌐</button>
         <div class="mode-toggle">
           <button class="mode-btn flash active" data-mode="flash">⚡ Flash</button>
           <button class="mode-btn pro" data-mode="pro">🧠 Pro</button>
         </div>
+        <button class="btn-stop" id="btnStop" title="停止生成" style="display:none">⏹ 停止</button>
       </div>
     </header>
 
@@ -42,25 +46,29 @@
       <div class="welcome" id="welcome">
         <div class="welcome-icon">🤖</div>
         <h2>有什么可以帮忙的？</h2>
-        <p>Flash 模式快速响应，Pro 模式深度推理。输入你的 DeepSeek API Key 即可开始使用。</p>
+        <p>Flash 快速响应 · Pro 深度推理 · 🌐 联网搜索 · 🎤 语音输入</p>
       </div>
       <div class="chat-messages" id="chatMessages"></div>
     </div>
 
     <div class="input-container">
+      <div class="file-preview" id="filePreview" style="display:none">
+        <span>📎 <span id="fileName"></span></span>
+        <button id="btnRemoveFile" title="移除附件">✕</button>
+      </div>
       <div class="input-wrapper">
+        <button class="tool-btn" id="btnVoice" title="语音输入">🎤</button>
         <textarea class="chat-input" id="chatInput" rows="1" placeholder="输入消息..." ></textarea>
         <div class="input-tools">
           <button class="tool-btn" id="btnFileUpload" title="上传文件">📎</button>
-          <input type="file" id="fileInput" style="display:none" accept=".txt,.md,.json,.csv,.py,.js,.ts,.html,.css,.pdf,.doc,.docx">
+          <input type="file" id="fileInput" style="display:none" accept=".txt,.md,.json,.csv,.py,.js,.ts,.html,.css,.xml,.yaml,.yml,.log">
           <button class="btn-send" id="btnSend" disabled title="发送">➤</button>
         </div>
       </div>
-      <div class="input-footer">DeepClaude · Flash / Pro 模式 · 数据仅保存在本地</div>
+      <div class="input-footer">DeepClaude · Flash / Pro / 🌐联网 / 🎤语音 · 数据仅保存在本地</div>
     </div>
   </div>
 
-  <!-- API Settings Modal -->
   <div class="modal-overlay" id="apiModal">
     <div class="modal">
       <h3>⚙️ API 设置</h3>
