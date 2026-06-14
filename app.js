@@ -12,6 +12,9 @@ const state = {
   attachedFile: null,  // { name, content }
 };
 
+const USER_AVATAR = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg>';
+const AI_AVATAR = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4d6bfe" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>';
+
 // ===== Theme =====
 function applyTheme() {
   const saved = localStorage.getItem("deepclaude_theme");
@@ -173,7 +176,7 @@ async function renderMessages() {
       content = renderMessageParts(m);
     }
     return `<div class="message ${isUser ? 'user' : 'assistant'}" data-id="${m.id}">
-      <div class="avatar">${isUser ? '👤' : '🤖'}</div>
+      <div class="avatar">${isUser ? ${USER_AVATAR} : ${AI_AVATAR}}</div>
       <div class="msg-content">${content}${editedMark}</div>
       <div class="msg-actions">
         <button data-action="edit" data-id="${m.id}">✎ 编辑</button>
