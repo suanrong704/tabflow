@@ -14,6 +14,10 @@ const state = {
 
 const USER_AVATAR = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg>';
 const AI_AVATAR = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4d6bfe" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>';
+const SVG_PENCIL = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>';
+const SVG_X = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+const SVG_CHECK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
 
 // ===== Theme =====
 function applyTheme() {
@@ -72,8 +76,8 @@ function renderSidebar() {
       <div class="conv-item ${c.id === state.currentConvId ? 'active' : ''}" data-id="${c.id}">
         <span class="conv-title">${escHtml(c.title)}</span>
         <span class="conv-actions">
-          <button data-action="rename" data-id="${c.id}" title="重命名">✎</button>
-          <button data-action="delete" data-id="${c.id}" title="删除">✕</button>
+          <button data-action="rename" data-id="${c.id}" title="重命名">${SVG_PENCIL}</button>
+          <button data-action="delete" data-id="${c.id}" title="删除">${SVG_X}</button>
         </span>
       </div>
     `).join("");
@@ -367,24 +371,45 @@ function clearAttachment() {
 let recognition = null;
 function startVoice() {
   if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
-    showToast("你的浏览器不支持语音输入");
+    showToast("你的浏览器不支持语音输入（请使用 Chrome）");
     return;
   }
-  if (recognition) recognition.abort();
+  if (recognition) {
+    recognition.abort();
+    recognition = null;
+    $("btnVoice").classList.remove("listening");
+    $("btnVoice").title = "语音输入";
+    return;
+  }
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   recognition = new SR();
   recognition.lang = "zh-CN";
-  recognition.interimResults = false;
+  recognition.interimResults = true;
   recognition.continuous = false;
-  $("btnVoice").classList.add("listening");
+  const btn = $("btnVoice");
+  btn.classList.add("listening");
+  btn.title = "录音中，点击停止";
   recognition.onresult = (e) => {
-    const transcript = e.results[0][0].transcript;
+    const transcript = Array.from(e.results).map(r => r[0].transcript).join("");
     const input = $("chatInput");
     input.value = input.value ? input.value + " " + transcript : transcript;
     input.dispatchEvent(new Event("input"));
   };
-  recognition.onerror = () => showToast("语音识别失败");
-  recognition.onend = () => $("btnVoice").classList.remove("listening");
+  recognition.onerror = (e) => {
+    showToast("语音识别失败: " + e.error);
+    if (recognition) { recognition.abort(); recognition = null; }
+    btn.classList.remove("listening");
+    btn.title = "语音输入";
+  };
+  recognition.onend = () => {
+    btn.classList.remove("listening");
+    btn.title = "语音输入";
+    recognition = null;
+  };
+  recognition.onaudiostart = () => { btn.style.boxShadow = "0 0 0 3px rgba(231,76,60,0.35)"; };
+  recognition.onaudioend = () => { btn.style.boxShadow = ""; };
+  recognition.onspeechstart = () => { btn.style.boxShadow = "0 0 0 3px rgba(231,76,60,0.5)"; };
+  recognition.onspeechend = () => { btn.style.boxShadow = "0 0 0 3px rgba(231,76,60,0.35)"; };
   recognition.start();
 }
 
@@ -474,7 +499,7 @@ function init() {
     const key = $("apiKeyInput").value.trim();
     if (!key) { showToast("请输入 API Key"); return; }
     setApiKey(key); $("apiModal").classList.remove("show");
-    showToast("✅ API Key 已保存");
+    showToast(SVG_CHECK + " API Key 已保存");
   });
   $("apiKeyInput").addEventListener("keydown", e => { if (e.key === "Enter") $("btnApiSave").click(); });
 

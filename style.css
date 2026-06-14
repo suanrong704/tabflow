@@ -676,9 +676,30 @@ body {
 .file-preview button { background: none; border: none; cursor: pointer; color: var(--text-tertiary); font-size: 14px; padding: 0 4px; }
 .file-preview button:hover { color: var(--danger); }
 
-/* Voice Button */
-.tool-btn.listening { color: var(--danger); animation: pulse 1s infinite; }
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* SVG icons in buttons */
+button svg {
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+/* Voice Recording */
+.tool-btn.listening {
+  color: var(--danger) !important;
+  position: relative;
+}
+.tool-btn.listening::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--danger);
+  animation: record-ring 1.5s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes record-ring {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
 
 /* Stop Button */
 .btn-stop {
