@@ -126,29 +126,15 @@
           <span class="thinking-label">思考</span>
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="thinking-arrow"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <div class="thinking-dropdown" id="thinkingDropdown" style="display:none">
-          <button class="thinking-option active" data-effort="disabled">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            Enable
-          </button>
-          <button class="thinking-option" data-effort="high">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="8" height="10" rx="1"/><rect x="14" y="8" width="8" height="14" rx="1"/><rect x="8" y="12" width="8" height="10" rx="1"/></svg>
-            High
-          </button>
-          <button class="thinking-option" data-effort="max">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="6" height="12" rx="1"/><rect x="10" y="3" width="6" height="14" rx="1"/><rect x="18" y="7" width="6" height="10" rx="1"/></svg>
-            Max
-          </button>
-        </div>
       </div>
 
       <button class="opt-chip" id="btnWebSearch" title="联网搜索">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         联网搜索
       </button>
-      <button class="opt-chip" id="btnPromptPanel" title="提示词生成器">
+      <button class="opt-chip" id="btnWorldview" title="世界观/底层框架">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        提示词
+        世界观
       </button>
     </div>
     <div class="file-preview" id="filePreview" style="display:none">
@@ -177,36 +163,79 @@
   </div>
 </div>
 
-<!-- Prompt Generator Panel -->
-<div class="prompt-panel" id="promptPanel">
-  <div class="prompt-panel-header">
+<!-- Worldview Panel -->
+<div class="worldview-panel" id="worldviewPanel">
+  <div class="worldview-panel-header">
     <h4>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      提示词生成器
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      ??? / ????
     </h4>
-    <button id="btnClosePrompt" title="关闭">
+    <button id="btnCloseWorldview" title="??">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
-  <div class="prompt-panel-body">
-    <label>描述你的需求</label>
-    <textarea id="promptRequirement" rows="3" placeholder="例如：帮我写一个小红书风格的文案提示词…"></textarea>
-    <button class="btn-generate-prompt" id="btnGeneratePrompt">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5z"/></svg>
-      生成提示词
-    </button>
-    <div class="prompt-result" id="promptResult" style="display:none">
-      <div class="prompt-result-header">
-        <span>生成结果</span>
-        <button id="btnCopyPrompt" class="btn-copy-prompt">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          复制
-        </button>
+  <div class="worldview-panel-body">
+    <!-- Worldview Summary (collapsed) -->
+    <div class="worldview-summary" id="worldviewSummary">
+      <div class="worldview-summary-left">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span id="worldviewStatus">??? ? ???</span>
       </div>
-      <div class="prompt-result-content" id="promptResultContent"></div>
+      <div class="worldview-summary-actions">
+        <button class="wv-btn-sm" id="btnUploadWorldview" title="????">??</button>
+        <input type="file" id="worldviewFileInput" accept=".txt,.md" style="display:none">
+        <button class="wv-btn-sm" id="btnEditWorldview" title="??">??</button>
+        <button class="wv-btn-sm" id="btnToggleWorldview" title="??">?</button>
+        <button class="wv-btn-sm wv-btn-danger" id="btnClearWorldview" title="??">??</button>
+      </div>
+    </div>
+
+    <!-- Worldview Preview (expanded, read-only) -->
+    <div class="worldview-preview" id="worldviewPreview" style="display:none">
+      <div class="worldview-preview-content" id="worldviewPreviewContent"></div>
+    </div>
+
+    <!-- Worldview Editor (edit mode) -->
+    <div class="worldview-editor" id="worldviewEditor" style="display:none">
+      <textarea id="worldviewTextarea" placeholder="?????????????????????..."></textarea>
+      <div class="worldview-editor-actions">
+        <button class="wv-btn" id="btnSaveWorldview">?????</button>
+        <button class="wv-btn wv-btn-cancel" id="btnCancelEdit">??</button>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="worldview-divider"></div>
+
+    <!-- Prompt Generator (collapsible, nested) -->
+    <div class="prompt-gen-section">
+      <div class="prompt-gen-header" id="promptGenHeader">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5z"/></svg>
+        <span>??????</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="prompt-gen-arrow"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="prompt-gen-body" id="promptGenBody" style="display:none">
+        <label>??????</label>
+        <textarea id="promptRequirement" rows="3" placeholder="????????????????????"></textarea>
+        <button class="btn-generate-prompt" id="btnGeneratePrompt">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5z"/></svg>
+          ?????
+        </button>
+        <div class="prompt-result" id="promptResult" style="display:none">
+          <div class="prompt-result-header">
+            <span>????</span>
+            <button id="btnCopyPrompt" class="btn-copy-prompt">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              ??
+            </button>
+          </div>
+          <div class="prompt-result-content" id="promptResultContent"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
 
 <!-- API Modal -->
 <div class="modal-overlay" id="apiModal">
@@ -233,5 +262,22 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");
 }
 </script>
+
+<!-- Thinking Dropdown (body-level to avoid Safari clipping) -->
+<div class="thinking-dropdown" id="thinkingDropdown" style="display:none">
+  <button class="thinking-option active" data-effort="disabled">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    Enable
+  </button>
+  <button class="thinking-option" data-effort="high">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="8" height="10" rx="1"/><rect x="14" y="8" width="8" height="14" rx="1"/><rect x="8" y="12" width="8" height="10" rx="1"/></svg>
+    High
+  </button>
+  <button class="thinking-option" data-effort="max">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="6" height="12" rx="1"/><rect x="10" y="3" width="6" height="14" rx="1"/><rect x="18" y="7" width="6" height="10" rx="1"/></svg>
+    Max
+  </button>
+</div>
+
 </body>
 </html>

@@ -11,7 +11,78 @@ const state = {
   sidebarVisible: true,
   abortController: null,
   attachedFile: null,
+  worldview: "",
 };
+
+
+// ===== Worldview =====
+function loadWorldview() {
+  state.worldview = localStorage.getItem("deepclaude_worldview") || "";
+  updateWorldviewUI();
+}
+function saveWorldview(text) {
+  state.worldview = text;
+  localStorage.setItem("deepclaude_worldview", text);
+  updateWorldviewUI();
+}
+function updateWorldviewUI() {
+  var text = state.worldview;
+  var status = document.getElementById("worldviewStatus");
+  var preview = document.getElementById("worldviewPreview");
+  var previewContent = document.getElementById("worldviewPreviewContent");
+  var editor = document.getElementById("worldviewEditor");
+  var textarea = document.getElementById("worldviewTextarea");
+  var toggleBtn = document.getElementById("btnToggleWorldview");
+  if (text) {
+    var charCount = text.length;
+    var summary = text.slice(0, 80).replace(/\n/g, " ");
+    status.textContent = "世界观 · 已设定 " + charCount.toLocaleString() + " 字：“" + summary + "…”";
+    previewContent.textContent = charCount > 5000 ? text.slice(0, 5000) + "
+
+…（前 5000 字预览，点击编辑查看全文）" : text;
+    toggleBtn.style.display = "";
+  } else {
+    status.textContent = "世界观 · 未设定";
+    preview.style.display = "none";
+    editor.style.display = "none";
+    toggleBtn.style.display = "none";
+  }
+}
+function toggleWorldview() {
+  var preview = document.getElementById("worldviewPreview");
+  var editor = document.getElementById("worldviewEditor");
+  var toggleBtn = document.getElementById("btnToggleWorldview");
+  if (!state.worldview) return;
+  if (preview.style.display === "none") {
+    preview.style.display = "block";
+    if (editor) editor.style.display = "none";
+    toggleBtn.textContent = "▴";
+  } else {
+    preview.style.display = "none";
+    toggleBtn.textContent = "▾";
+  }
+}
+function editWorldview() {
+  var preview = document.getElementById("worldviewPreview");
+  var editor = document.getElementById("worldviewEditor");
+  var textarea = document.getElementById("worldviewTextarea");
+  var toggleBtn = document.getElementById("btnToggleWorldview");
+  textarea.value = state.worldview;
+  preview.style.display = "none";
+  editor.style.display = "flex";
+  toggleBtn.style.display = "none";
+  textarea.focus();
+}
+function handleWorldviewUpload(file) {
+  if (!file) return;
+  if (file.size > 2000000) { showToast("文件太大（最大 2MB）"); return; }
+  var reader = new FileReader();
+  reader.onload = function() {
+    saveWorldview(reader.result);
+    showToast("世界观已导入（" + file.name + "）");
+  };
+  reader.readAsText(file);
+}
 
 const SVG_USER = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg>';
 const SVG_AI = '<svg width="16" height="16" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="15" fill="#4d6bfe"/><text x="16" y="22" text-anchor="middle" fill="white" font-size="18" font-weight="700" font-family="sans-serif">D</text></svg>';
@@ -551,7 +622,7 @@ async function generatePrompt() {
       body: JSON.stringify({
         model: "deepseek-v4-flash",
         messages: [
-          { role: "system", content: "You are a prompt engineering expert. Based on the user requirements, generate a well-crafted, detailed prompt in the same language. Output ONLY the prompt, no explanations." },
+          { role: "system", content: "You are a prompt engineering expert. Based on the user requirements, generate a well-crafted, detailed prompt in the same language. Output ONLY the prompt, no explanations." + (state.worldview ? "\n\n【世界观/底层框架】\n" + state.worldview : "") },
           { role: "user", content: requirement }
         ],
         stream: false, temperature: 0.7, max_tokens: 2048,
@@ -719,7 +790,7 @@ async function sendMessage(userText) {
   const apiMessages = [];
 
   // System prompt
-  let systemPrompt = "You are DeepClaude, a helpful AI assistant.";
+  let systemPrompt = "You are DeepClaude, a helpful AI assistant." + (state.worldview ? "\n\n【世界观/底层框架 - 请严格遵循以下设定】\n" + state.worldview : "");
   if (state.model === "pro") {
     systemPrompt += " Provide detailed reasoning before your final answer.";
   }
@@ -1044,8 +1115,13 @@ function init() {
   $("btnThinking").addEventListener("click", (e) => {
     e.stopPropagation();
     const dd = $("thinkingDropdown");
+    const btn = $("btnThinking");
     if (dd.style.display === "none" || !dd.style.display) {
       dd.style.display = "flex";
+      var rect = btn.getBoundingClientRect();
+      dd.style.top = (rect.top - dd.offsetHeight - 8) + "px";
+      dd.style.left = (rect.left + rect.width / 2) + "px";
+      dd.style.transform = "translateX(-50%)";
     } else {
       dd.style.display = "none";
     }
@@ -1097,18 +1173,58 @@ function init() {
   });
 
   // Voice
-  // Prompt panel
-  $("btnPromptPanel").addEventListener("click", () => {
-    $("promptPanel").classList.toggle("open");
-    $("btnPromptPanel").classList.toggle("active", $("promptPanel").classList.contains("open"));
+  // Worldview panel
+  $("btnWorldview").addEventListener("click", () => {
+    $("worldviewPanel").classList.toggle("open");
+    $("btnWorldview").classList.toggle("active", $("worldviewPanel").classList.contains("open"));
   });
-  $("btnClosePrompt").addEventListener("click", () => {
-    $("promptPanel").classList.remove("open");
-    $("btnPromptPanel").classList.remove("active");
+  $("btnCloseWorldview").addEventListener("click", () => {
+    $("worldviewPanel").classList.remove("open");
+    $("btnWorldview").classList.remove("active");
+  });
+  // Worldview toggle
+  $("btnToggleWorldview").addEventListener("click", toggleWorldview);
+  // Worldview edit
+  $("btnEditWorldview").addEventListener("click", editWorldview);
+  // Worldview save
+  $("btnSaveWorldview").addEventListener("click", () => {
+    saveWorldview($("worldviewTextarea").value);
+    $("worldviewEditor").style.display = "none";
+    showToast("世界观已保存");
+  });
+  // Worldview cancel
+  $("btnCancelEdit").addEventListener("click", () => {
+    $("worldviewEditor").style.display = "none";
+    updateWorldviewUI();
+  });
+  // Worldview clear
+  $("btnClearWorldview").addEventListener("click", () => {
+    if (confirm("确定要清空世界观设定吗？")) {
+      saveWorldview("");
+      showToast("世界观已清空");
+    }
+  });
+  // Worldview file upload
+  $("btnUploadWorldview").addEventListener("click", () => $("worldviewFileInput").click());
+  $("worldviewFileInput").addEventListener("change", (e) => {
+    handleWorldviewUpload(e.target.files[0]);
+    e.target.value = "";
+  });
+  // Prompt generator
+  $("promptGenHeader").addEventListener("click", () => {
+    var body = $("promptGenBody");
+    var header = $("promptGenHeader");
+    if (body.style.display === "none") {
+      body.style.display = "flex";
+      header.classList.add("open");
+    } else {
+      body.style.display = "none";
+      header.classList.remove("open");
+    }
   });
   $("btnGeneratePrompt").addEventListener("click", generatePrompt);
   $("btnCopyPrompt").addEventListener("click", () => {
-    const text = $("promptResultContent").textContent;
+    var text = $("promptResultContent").textContent;
     navigator.clipboard.writeText(text).then(() => showToast("提示词已复制")).catch(() => showToast("复制失败"));
   });
 
@@ -1222,6 +1338,8 @@ function init() {
   document.getElementById("aiAvatarPick").addEventListener("click", () => handleAvatarUpload("ai"));
   document.getElementById("btnResetAvatars").addEventListener("click", resetAvatars);
   updateAvatarPreviews();
+  // Worldview
+  loadWorldview();
 }
 
 marked.setOptions({ breaks: true, gfm: true });
