@@ -689,7 +689,7 @@ async function sendMessage(userText) {
     $("btnScrollBottom").style.display = "none";
     await renderMessages();
     scrollToBottom();
-    generateTitle(userText.trim());
+    await generateTitle(userText.trim());
   }
 }
 
