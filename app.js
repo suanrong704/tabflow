@@ -618,8 +618,8 @@ async function sendMessage(userText) {
 
   apiMessages.push({ role: "system", content: systemPrompt });
   
-  // Add conversation history (last 20 messages)
-  const recentMsgs = allMsgs.slice(-20);
+  // Add conversation history (last 50 messages)
+  const recentMsgs = allMsgs.slice(-50);
   recentMsgs.forEach(m => {
     let content = m.content;
     // Strip reasoning markers for API
