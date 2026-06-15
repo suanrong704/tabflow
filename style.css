@@ -18,7 +18,7 @@
   --bg-sidebar: #f9fafb;
   --bg-sidebar-hover: #f0f0f1;
   --bg-sidebar-active: #e8e8ea;
-  --bg-bubble-user: #f0f0f3;
+  --bg-bubble-user: #e8f0fe;
   --bg-bubble-ai: transparent;
   --bg-input: #f4f4f5;
   --bg-input-focus: #ffffff;
@@ -55,7 +55,7 @@
   --bg-sidebar: #16162a;
   --bg-sidebar-hover: #222240;
   --bg-sidebar-active: #2a2a4a;
-  --bg-bubble-user: #2e2e4a;
+  --bg-bubble-user: #1e2a4a;
   --bg-bubble-ai: transparent;
   --bg-input: #232340;
   --bg-input-focus: #2a2a48;

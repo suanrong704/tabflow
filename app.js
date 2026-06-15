@@ -440,39 +440,11 @@ function clearAttachment() {
 
 
 async function generateTitle(userText) {
-  try {
-    const conv = await storage.getConversation(state.currentConvId);
-    if (!conv || conv.title !== "新对话") return;
-    const apiKey = getApiKey();
-    if (!apiKey) {
-      // Fallback: use first 20 chars
-      await storage.updateConversation(state.currentConvId, { title: userText.slice(0, 20) || "新对话" });
-      renderSidebar();
-      return;
-    }
-    const resp = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiKey },
-      body: JSON.stringify({
-        model: "deepseek-v4-flash",
-        messages: [
-          { role: "system", content: "Generate a concise title (max 20 Chinese characters or 40 English chars) for a conversation that starts with this message. Output ONLY the title, no quotes, no explanations." },
-          { role: "user", content: userText }
-        ],
-        stream: false, temperature: 0.3, max_tokens: 50,
-      }),
-    });
-    if (!resp.ok) throw new Error("Title API failed");
-    const data = await resp.json();
-    const title = (data.choices?.[0]?.message?.content || "").replace(/["']/g, "").slice(0, 30).trim();
-    if (title) {
-      await storage.updateConversation(state.currentConvId, { title });
-      renderSidebar();
-    }
-  } catch (e) {
-    // Fallback
-    const t = userText.slice(0, 20);
-    await storage.updateConversation(state.currentConvId, { title: t || "新对话" });
+  const conv = await storage.getConversation(state.currentConvId);
+  if (!conv || conv.title !== "新对话") return;
+  const t = (userText || "").replace(/\s+/g, " ").trim().slice(0, 20);
+  if (t) {
+    await storage.updateConversation(state.currentConvId, { title: t });
     renderSidebar();
   }
 }
