@@ -350,6 +350,7 @@ body {
 
 .message {
   display: flex;
+  flex-wrap: wrap;
   gap: 14px;
   margin-bottom: 28px;
   animation: msgIn 0.25s ease;
@@ -776,13 +777,44 @@ body {
 
 /* ===== Hover Action Menu (DeepSeek inline) ===== */
 .message-actions {
+  width: 100%;
   display: flex;
-  gap: 2px;
+  gap: 4px;
   opacity: 0;
   transition: opacity 0.15s ease;
-  margin-top: 2px;
   flex-wrap: wrap;
 }
+.message:hover .message-actions {
+  opacity: 1;
+}
+.message.user .message-actions {
+  justify-content: flex-end;
+  padding-right: 46px;
+}
+.message.assistant .message-actions {
+  padding-left: 46px;
+}
+.message-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.message-action-btn:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--text-tertiary);
+}
+
 .message:hover .message-actions {
   opacity: 1;
 }
@@ -1031,9 +1063,9 @@ body {
 .nav-progress {
   position: absolute;
   right: 0;
-  top: 0;
-  bottom: 130px;
-  width: 30px;
+  top: 48px;
+  bottom: 140px;
+  width: 36px;
   z-index: 100;
   pointer-events: none;
   display: flex;
@@ -1042,26 +1074,27 @@ body {
 }
 .nav-progress-track {
   position: relative;
-  width: 3px;
-  height: calc(100% - 20px);
+  width: 5px;
+  height: calc(100% - 16px);
   background: var(--border);
-  border-radius: 2px;
+  border-radius: 3px;
   pointer-events: auto;
-  min-height: 20px;
+  min-height: 30px;
 }
 .nav-progress-dot {
   position: absolute;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--accent);
-  opacity: 0.55;
+  opacity: 0.6;
   transition: all 0.2s ease;
   cursor: pointer;
   pointer-events: auto;
   border: 2px solid var(--bg-primary);
+  box-shadow: 0 0 0 1px var(--accent);
 }
 .nav-progress-track:hover .nav-progress-dot {
   opacity: 0.9;
@@ -1069,8 +1102,8 @@ body {
 .nav-progress-dot:hover {
   opacity: 1 !important;
   background: var(--accent);
-  transform: translate(-50%, -50%) scale(1.8);
-  box-shadow: 0 0 0 4px rgba(77,107,254,0.3);
+  transform: translate(-50%, -50%) scale(2);
+  box-shadow: 0 0 0 4px rgba(77,107,254,0.4);
 }
 .nav-progress-tip {
   position: fixed;
@@ -1088,6 +1121,7 @@ body {
   box-shadow: var(--shadow-md);
   pointer-events: none;
 }
+
 
 /* Message highlight flash */
 .message.flash-highlight .message-body {
