@@ -14,7 +14,7 @@ const state = {
 };
 
 const SVG_USER = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg>';
-const SVG_AI = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="16" r="6"/><circle cx="20" cy="10" r="4"/><circle cx="20" cy="22" r="3"/><line x1="15" y1="14" x2="18" y2="12"/><line x1="15" y1="18" x2="18" y2="20"/></svg>';
+const SVG_AI = '<svg width="16" height="16" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="15" fill="#4d6bfe"/><text x="16" y="22" text-anchor="middle" fill="white" font-size="18" font-weight="700" font-family="sans-serif">D</text></svg>';
 const SVG_COPY = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
 const SVG_REFRESH = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>';
 const SVG_EDIT = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>';
@@ -24,6 +24,59 @@ const SVG_SPEAK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" s
 // ===== Theme =====
 function getTheme() { return localStorage.getItem("deepclaude_theme") || "auto"; }
 function setTheme(t) { localStorage.setItem("deepclaude_theme", t); applyTheme(); }
+
+// ===== Custom Avatars =====
+function getAvatar(type) {
+  return localStorage.getItem("deepclaude_avatar_" + type) || "";
+}
+function setAvatar(type, b64) {
+  if (b64) localStorage.setItem("deepclaude_avatar_" + type, b64);
+  else localStorage.removeItem("deepclaude_avatar_" + type);
+}
+function getAvatarHTML(type) {
+  const b64 = getAvatar(type);
+  if (b64) return '<img src="' + b64 + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
+  if (type === "user") return SVG_USER;
+  return '<svg width="16" height="16" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="15" fill="#4d6bfe"/><text x="16" y="22" text-anchor="middle" fill="white" font-size="18" font-weight="700" font-family="sans-serif">D</text></svg>';
+}
+
+function handleAvatarUpload(type) {
+  const input = document.getElementById(type + "AvatarInput");
+  input.click();
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 500000) { showToast("???????500KB?"); return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setAvatar(type, reader.result);
+      updateAvatarPreviews();
+      renderMessages();
+    };
+    reader.readAsDataURL(file);
+  };
+}
+
+function updateAvatarPreviews() {
+  const userPrev = document.getElementById("userAvatarPreview");
+  const aiPrev = document.getElementById("aiAvatarPreview");
+  if (userPrev) {
+    const ub64 = getAvatar("user");
+    userPrev.innerHTML = ub64 ? '<img src="' + ub64 + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg>';
+  }
+  if (aiPrev) {
+    const ab64 = getAvatar("ai");
+    aiPrev.innerHTML = ab64 ? '<img src="' + ab64 + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">' : "D";
+  }
+}
+
+function resetAvatars() {
+  localStorage.removeItem("deepclaude_avatar_user");
+  localStorage.removeItem("deepclaude_avatar_ai");
+  updateAvatarPreviews();
+  renderMessages();
+  showToast("???????");
+}
 
 function applyTheme() {
   const t = getTheme();
@@ -246,7 +299,7 @@ function createMessageEl(msg, versionIndex) {
   const actionsHtml = isUser
     ? '<button class="message-action-btn" data-action="copy-msg" data-id="' + msg.id + '">' + SVG_COPY + '</button><button class="message-action-btn" data-action="edit-msg" data-id="' + msg.id + '">' + SVG_EDIT + ' \u7f16\u8f91</button>'
     : '<button class="message-action-btn" data-action="copy-msg" data-id="' + msg.id + '">' + SVG_COPY + ' \u590d\u5236</button><button class="message-action-btn" data-action="regenerate" data-id="' + msg.id + '">' + SVG_REFRESH + ' \u91cd\u65b0\u751f\u6210</button><button class="message-action-btn" data-action="speak-msg" data-id="' + msg.id + '">' + SVG_SPEAK + ' \u6717\u8bfb</button>';
-  return '<div class="message ' + (isUser?'user':'assistant') + '" data-id="' + msg.id + '"><div class="message-avatar">' + (isUser ? SVG_USER : SVG_AI) + '</div><div class="message-body">' + bodyHtml + '</div><div class="message-actions">' + actionsHtml + '</div></div></div>';
+  return '<div class="message ' + (isUser?'user':'assistant') + '" data-id="' + msg.id + '"><div class="message-avatar">' + getAvatarHTML(isUser ? 'user' : 'ai') + '</div><div class="message-body">' + bodyHtml + '</div><div class="message-actions">' + actionsHtml + '</div></div></div>';
 }
 
 async function renderMessages() {
@@ -1160,6 +1213,11 @@ function init() {
     }
     renderSidebar();
   })();
+  // Avatar upload
+  document.getElementById("userAvatarPick").addEventListener("click", () => handleAvatarUpload("user"));
+  document.getElementById("aiAvatarPick").addEventListener("click", () => handleAvatarUpload("ai"));
+  document.getElementById("btnResetAvatars").addEventListener("click", resetAvatars);
+  updateAvatarPreviews();
 }
 
 marked.setOptions({ breaks: true, gfm: true });

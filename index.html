@@ -87,7 +87,24 @@
     <button class="scroll-bottom-btn" id="btnScrollBottom" title="滚动到底部" style="display:none">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
+    <div class="sidebar-avatars">
+    <div class="avatar-row">
+      <span class="avatar-label">????</span>
+      <div class="avatar-pick" id="userAvatarPick" title="??????">
+        <div class="avatar-preview" id="userAvatarPreview"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg></div>
+      </div>
+      <input type="file" id="userAvatarInput" accept="image/*" style="display:none">
+    </div>
+    <div class="avatar-row">
+      <span class="avatar-label">AI ??</span>
+      <div class="avatar-pick" id="aiAvatarPick" title="??????">
+        <div class="avatar-preview" id="aiAvatarPreview">D</div>
+      </div>
+      <input type="file" id="aiAvatarInput" accept="image/*" style="display:none">
+    </div>
+    <button class="avatar-reset-btn" id="btnResetAvatars">??????</button>
   </div>
+</div>
 
   <div class="input-container">
     <div class="input-options" id="inputOptions">
