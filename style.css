@@ -981,66 +981,25 @@ body {
 .worldview-panel-header button:hover { background: var(--bg-secondary); color: var(--text-primary); }
 .worldview-panel-body { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
 .worldview-panel-body label { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
-.worldview-panel-body textarea {
-  width: 100%; padding: 10px 14px;
-  border: 1px solid var(--border); border-radius: var(--radius-sm);
-  background: var(--bg-input); color: var(--text-primary);
-  font-family: var(--font); font-size: 13px; resize: vertical; outline: none;
-  transition: border-color var(--transition);
-}
-.worldview-panel-body textarea:focus { border-color: var(--accent); }
-.btn-generate-prompt {
-  padding: 10px 16px;
-  background: var(--accent); color: #fff;
-  border: none; border-radius: var(--radius-sm);
-  cursor: pointer; font-size: 13px; font-weight: 600;
-  font-family: var(--font);
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  transition: background var(--transition);
-}
-.btn-generate-prompt:hover { background: var(--accent-hover); }
-.btn-generate-prompt:disabled { opacity: 0.55; cursor: not-allowed; }
-.prompt-result { border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; animation: fadeIn 0.3s ease; }
-.prompt-result-header {
-  padding: 8px 12px; background: var(--bg-secondary);
-  display: flex; align-items: center; justify-content: space-between;
-  font-size: 12px; color: var(--text-secondary);
-  border-bottom: 1px solid var(--border);
-}
-.btn-copy-prompt {
-  background: none; border: 1px solid var(--border); border-radius: 4px;
-  padding: 3px 8px; cursor: pointer; font-size: 11px;
-  color: var(--text-secondary); display: flex; align-items: center; gap: 4px;
-  font-family: var(--font); transition: all var(--transition);
-}
-.btn-copy-prompt:hover { background: var(--bg-tertiary); color: var(--text-primary); }
-.prompt-result-content {
-  padding: 12px; font-size: 13px; line-height: 1.7;
-  color: var(--text-primary); max-height: 300px; overflow-y: auto; white-space: pre-wrap;
-}
-
-/* Worldview Panel - Extended Styles */
+/* Worldview Extended Styles */
 .worldview-summary {
   display: flex; align-items: center; justify-content: space-between;
   padding: 10px 14px;
-  background: var(--bg-secondary);
-  border-radius: var(--radius-sm);
-  gap: 8px;
-  flex-shrink: 0;
+  background: var(--bg-secondary); border-radius: var(--radius-sm);
+  gap: 8px; flex-shrink: 0;
 }
 .worldview-summary-left {
   display: flex; align-items: center; gap: 8px;
-  font-size: 13px; color: var(--text-secondary);
-  min-width: 0;
+  font-size: 13px; color: var(--text-secondary); min-width: 0;
 }
 .worldview-summary-left span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .worldview-summary-actions { display: flex; gap: 4px; flex-shrink: 0; }
 .wv-btn-sm {
   background: none; border: 1px solid var(--border);
   border-radius: 5px; padding: 4px 7px; cursor: pointer;
-  font-size: 12px; color: var(--text-secondary);
-  transition: all var(--transition);
-  display: flex; align-items: center;
+  font-size: 13px; color: var(--text-secondary);
+  transition: all var(--transition); display: flex; align-items: center;
+  line-height: 1;
 }
 .wv-btn-sm:hover { background: var(--bg-tertiary); color: var(--text-primary); }
 .wv-btn-danger:hover { color: var(--danger); border-color: var(--danger); }
@@ -1097,6 +1056,43 @@ body {
 }
 .prompt-gen-body textarea:focus { border-color: var(--accent); }
 
+.worldview-panel-body textarea {
+  width: 100%; padding: 10px 14px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--bg-input); color: var(--text-primary);
+  font-family: var(--font); font-size: 13px; resize: vertical; outline: none;
+  transition: border-color var(--transition);
+}
+.worldview-panel-body textarea:focus { border-color: var(--accent); }
+.btn-generate-prompt {
+  padding: 10px 16px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: var(--radius-sm);
+  cursor: pointer; font-size: 13px; font-weight: 600;
+  font-family: var(--font);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: background var(--transition);
+}
+.btn-generate-prompt:hover { background: var(--accent-hover); }
+.btn-generate-prompt:disabled { opacity: 0.55; cursor: not-allowed; }
+.prompt-result { border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; animation: fadeIn 0.3s ease; }
+.prompt-result-header {
+  padding: 8px 12px; background: var(--bg-secondary);
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12px; color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+}
+.btn-copy-prompt {
+  background: none; border: 1px solid var(--border); border-radius: 4px;
+  padding: 3px 8px; cursor: pointer; font-size: 11px;
+  color: var(--text-secondary); display: flex; align-items: center; gap: 4px;
+  font-family: var(--font); transition: all var(--transition);
+}
+.btn-copy-prompt:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+.prompt-result-content {
+  padding: 12px; font-size: 13px; line-height: 1.7;
+  color: var(--text-primary); max-height: 300px; overflow-y: auto; white-space: pre-wrap;
+}
 
 /* Voice Recording */
 .tool-btn.listening {
@@ -1443,4 +1439,19 @@ body {
   /* ===== Stop button ===== */
   .btn-stop { right: 12px; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
 
+  .thinking-toggle {
+    position: relative;
+  }
+  .thinking-dropdown {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 400;
+    min-width: 200px;
+  }
+  .thinking-option {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
 }

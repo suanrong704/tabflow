@@ -1180,35 +1180,28 @@ function init() {
     $("worldviewPanel").classList.remove("open");
     $("btnWorldview").classList.remove("active");
   });
-  // Worldview toggle
   $("btnToggleWorldview").addEventListener("click", toggleWorldview);
-  // Worldview edit
   $("btnEditWorldview").addEventListener("click", editWorldview);
-  // Worldview save
   $("btnSaveWorldview").addEventListener("click", () => {
     saveWorldview($("worldviewTextarea").value);
     $("worldviewEditor").style.display = "none";
     showToast("世界观已保存");
   });
-  // Worldview cancel
   $("btnCancelEdit").addEventListener("click", () => {
     $("worldviewEditor").style.display = "none";
     updateWorldviewUI();
   });
-  // Worldview clear
   $("btnClearWorldview").addEventListener("click", () => {
     if (confirm("确定要清空世界观设定吗？")) {
       saveWorldview("");
       showToast("世界观已清空");
     }
   });
-  // Worldview file upload
   $("btnUploadWorldview").addEventListener("click", () => $("worldviewFileInput").click());
   $("worldviewFileInput").addEventListener("change", (e) => {
     handleWorldviewUpload(e.target.files[0]);
     e.target.value = "";
   });
-  // Prompt generator
   $("promptGenHeader").addEventListener("click", () => {
     var body = $("promptGenBody");
     var header = $("promptGenHeader");
@@ -1336,7 +1329,6 @@ function init() {
   document.getElementById("aiAvatarPick").addEventListener("click", () => handleAvatarUpload("ai"));
   document.getElementById("btnResetAvatars").addEventListener("click", resetAvatars);
   updateAvatarPreviews();
-  // Worldview
   loadWorldview();
 }
 
