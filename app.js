@@ -840,6 +840,15 @@ async function importConversation(file) {
 
 // ===== Auto Context Retrieval =====
 function retrieveContext(userInput, allMessages) {
+  // Detect if user is correcting the AI
+  const correctionPatterns = [
+    /不对/, /错了/, /错误/, /纠正/, /不是/, /不对的/, /搞错/, /误导/,
+    /别乱说/, /你说得不/, /修正/, /更正/,
+    /wrong/i, /incorrect/i, /mistake/i, /actually/i, /not right/i,
+    /not correct/i, /that.s not/, /you.re wrong/, /stop saying/, /don.t say/
+  ];
+  const isCorrection = correctionPatterns.some(p => p.test(userInput));
+
   if (allMessages.length < 4) return "";
   
   // Extract keywords: Chinese bigrams + English words
@@ -887,7 +896,7 @@ function retrieveContext(userInput, allMessages) {
     let score = 0;
     for (const kw of keywords_filtered) {
       const count = (combined.match(new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi")) || []).length;
-      score += count * (kw.length >= 3 ? 3 : 1); // weight longer keywords higher
+      score += count * (kw.length >= 3 ? 3 : 1);
     }
     
     if (score > 0) {
@@ -901,8 +910,14 @@ function retrieveContext(userInput, allMessages) {
   pairs.sort((a, b) => b.score - a.score);
   const top = pairs.slice(0, 3);
   
-  // Format snippets
-  let context = "\n\n[RELEVANT PAST CONTEXT - use this to stay consistent:]\n";
+  // Format context - handle correction differently
+  let context;
+  if (isCorrection) {
+    context = "\n\n【重要：用户在纠正之前的错误。不要重复之前的错误信息，以用户当前的纠正为准。以下是相关历史（可能含有已被纠正的内容）：】\n";
+  } else {
+    context = "\n\n[RELEVANT PAST CONTEXT - use this to stay consistent:]\n";
+  }
+  
   for (const p of top) {
     const userSnippet = p.userMsg.content.replace(/\n/g, " ").slice(0, 120);
     const aiSnippet = (p.aiMsg?.content || "").replace(/__REASONING__.*?__ANSWER__/s, "").replace(/\n/g, " ").slice(0, 200);
@@ -911,7 +926,6 @@ function retrieveContext(userInput, allMessages) {
   
   return context;
 }
-
 
 async function sendMessage(userText) {
   if (!userText.trim() || state.isGenerating) return;
