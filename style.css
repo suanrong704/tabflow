@@ -1181,7 +1181,25 @@ body {
   .model-switcher { flex-shrink: 0; gap: 2px; }
   .model-btn { padding: 5px 10px; font-size: 12px; border-radius: 6px; }
   .opt-chip { padding: 4px 8px; font-size: 12px; white-space: nowrap; flex-shrink: 0; }
-  .thinking-toggle { flex-shrink: 0; }
+  .thinking-toggle { flex-shrink: 0; position: relative; }
+  .thinking-dropdown {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 400;
+    min-width: 180px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    padding: 6px;
+  }
+  .thinking-option {
+    padding: 12px 16px;
+    font-size: 14px;
+    border-radius: 8px;
+  }
   
   /* Input wrapper */
   .input-wrapper {
@@ -1286,4 +1304,20 @@ body {
   
   /* ===== Stop button ===== */
   .btn-stop { right: 12px; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
+
+  .thinking-toggle {
+    position: relative;
+  }
+  .thinking-dropdown {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 400;
+    min-width: 200px;
+  }
+  .thinking-option {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
 }

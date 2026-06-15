@@ -971,10 +971,11 @@ function init() {
   document.getElementById("convList").addEventListener("click", (e) => {
     if (isMobile() && e.target.closest(".conv-item")) closeMobileSidebar();
   });
-  // Also close on new chat button
+  // New chat button
   $("btnNewChat").addEventListener("click", () => {
+    newConversation();
     if (isMobile()) closeMobileSidebar();
-  });
+  })
   // Close on clicking sidebar header area
   document.querySelector(".sidebar-header").addEventListener("click", (e) => {
     // Don't close when clicking the close button (handled separately)
@@ -1014,6 +1015,14 @@ function init() {
   });
   document.addEventListener("click", () => {
     $("thinkingDropdown").style.display = "none";
+  });
+  // Model switcher
+  document.querySelectorAll(".model-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".model-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.model = btn.dataset.model;
+    });
   });
 
   // Theme toggle
