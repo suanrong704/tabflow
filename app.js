@@ -353,7 +353,7 @@ async function regenerateMessage(msgId) {
 function updateNavProgress() {
   const track = document.getElementById("navTrack");
   const userMsgs = document.querySelectorAll(".message.user");
-  const container = document.getElementById("chatArea");
+  const container = document.getElementById("chatMessages");
   
   if (!track || !state.currentConvId || userMsgs.length <= 1) {
     if (track) track.innerHTML = "";
@@ -757,6 +757,13 @@ function cleanupVoice() {
 
 // ===== Init =====
 function init() {
+  // Move progress bar into chat-messages for proper content-height tracking
+  (function() {
+    const navP = document.getElementById("navProgress");
+    const msgs = document.getElementById("chatMessages");
+    if (navP && msgs) msgs.appendChild(navP);
+  })();
+
   // Sidebar toggle
   $("btnToggleSidebar").addEventListener("click", () => {
     state.sidebarVisible = !state.sidebarVisible;
