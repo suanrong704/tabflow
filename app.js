@@ -353,7 +353,7 @@ async function regenerateMessage(msgId) {
 function updateNavProgress() {
   const track = document.getElementById("navTrack");
   const userMsgs = document.querySelectorAll(".message.user");
-  const container = document.getElementById("chatMessages");
+  const chatArea = document.getElementById("chatArea");
   
   if (!track || !state.currentConvId || userMsgs.length <= 1) {
     if (track) track.innerHTML = "";
@@ -364,13 +364,18 @@ function updateNavProgress() {
 
   const navP = document.getElementById("navProgress");
   if (navP) navP.style.display = "";
-  const scrollH = container.scrollHeight;
+  
+  const scrollH = chatArea.scrollHeight;
+  const areaRect = chatArea.getBoundingClientRect();
   track.innerHTML = "";
   
   userMsgs.forEach((msgEl) => {
     const dot = document.createElement("div");
     dot.className = "nav-progress-dot";
-    const dotTop = (msgEl.offsetTop / scrollH) * 100;
+    // Calculate absolute content position from viewport + scroll
+    const msgRect = msgEl.getBoundingClientRect();
+    const msgContentPos = msgRect.top - areaRect.top + chatArea.scrollTop;
+    const dotTop = (msgContentPos / scrollH) * 100;
     dot.style.top = Math.min(98, Math.max(2, dotTop)) + "%";
     dot.title = (msgEl.querySelector(".message-body")?.textContent || "").trim().slice(0, 40);
     
@@ -757,13 +762,6 @@ function cleanupVoice() {
 
 // ===== Init =====
 function init() {
-  // Move progress bar into chat-messages for proper content-height tracking
-  (function() {
-    const navP = document.getElementById("navProgress");
-    const msgs = document.getElementById("chatMessages");
-    if (navP && msgs) msgs.appendChild(navP);
-  })();
-
   // Sidebar toggle
   $("btnToggleSidebar").addEventListener("click", () => {
     state.sidebarVisible = !state.sidebarVisible;
