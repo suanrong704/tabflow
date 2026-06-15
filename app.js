@@ -918,6 +918,12 @@ function cleanupVoice() {
 
 // ===== Init =====
 function init() {
+  // Mobile: collapse sidebar by default
+  if (window.innerWidth <= 768) {
+    state.sidebarVisible = false;
+    $("sidebar").classList.add("collapsed");
+  }
+
   // Sidebar toggle (with mobile backdrop)
   const isMobile = () => window.innerWidth <= 768;
   let sidebarBackdrop = null;
@@ -955,26 +961,24 @@ function init() {
   });
   
   // Close sidebar on conversation click (mobile)
+  const closeMobileSidebar = () => {
+    setTimeout(() => {
+      state.sidebarVisible = false;
+      $("sidebar").classList.add("collapsed");
+      hideSidebarBackdrop();
+    }, 150);
+  };
   document.getElementById("convList").addEventListener("click", (e) => {
-    if (isMobile() && e.target.closest(".conv-item")) {
-      setTimeout(() => {
-        state.sidebarVisible = false;
-        $("sidebar").classList.add("collapsed");
-        hideSidebarBackdrop();
-      }, 150);
-    }
+    if (isMobile() && e.target.closest(".conv-item")) closeMobileSidebar();
   });
-
-  // New chat
-  $("btnNewChat").addEventListener("click", newConversation);
-
-  // Model switcher
-  document.querySelectorAll(".model-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".model-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      state.model = btn.dataset.model;
-    });
+  // Also close on new chat button
+  $("btnNewChat").addEventListener("click", () => {
+    if (isMobile()) closeMobileSidebar();
+  });
+  // Close on clicking sidebar header area
+  document.querySelector(".sidebar-header").addEventListener("click", (e) => {
+    // Don't close when clicking the close button (handled separately)
+    if (isMobile() && !e.target.closest("#btnCloseSidebar")) closeMobileSidebar();
   });
 
   // Web search toggle
