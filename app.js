@@ -918,14 +918,51 @@ function cleanupVoice() {
 
 // ===== Init =====
 function init() {
-  // Sidebar toggle
+  // Sidebar toggle (with mobile backdrop)
+  const isMobile = () => window.innerWidth <= 768;
+  let sidebarBackdrop = null;
+  
+  function showSidebarBackdrop() {
+    if (!sidebarBackdrop) {
+      sidebarBackdrop = document.createElement("div");
+      sidebarBackdrop.className = "sidebar-backdrop";
+      sidebarBackdrop.style.cssText = "position:fixed;inset:0;z-index:250;background:rgba(0,0,0,0.4);";
+      sidebarBackdrop.addEventListener("click", () => {
+        state.sidebarVisible = false;
+        $("sidebar").classList.add("collapsed");
+        hideSidebarBackdrop();
+      });
+      document.body.appendChild(sidebarBackdrop);
+    }
+    sidebarBackdrop.style.display = "block";
+  }
+  
+  function hideSidebarBackdrop() {
+    if (sidebarBackdrop) sidebarBackdrop.style.display = "none";
+  }
+  
   $("btnToggleSidebar").addEventListener("click", () => {
     state.sidebarVisible = !state.sidebarVisible;
     $("sidebar").classList.toggle("collapsed", !state.sidebarVisible);
+    if (isMobile()) {
+      state.sidebarVisible ? showSidebarBackdrop() : hideSidebarBackdrop();
+    }
   });
   $("btnCloseSidebar").addEventListener("click", () => {
     state.sidebarVisible = false;
     $("sidebar").classList.add("collapsed");
+    if (isMobile()) hideSidebarBackdrop();
+  });
+  
+  // Close sidebar on conversation click (mobile)
+  document.getElementById("convList").addEventListener("click", (e) => {
+    if (isMobile() && e.target.closest(".conv-item")) {
+      setTimeout(() => {
+        state.sidebarVisible = false;
+        $("sidebar").classList.add("collapsed");
+        hideSidebarBackdrop();
+      }, 150);
+    }
   });
 
   // New chat

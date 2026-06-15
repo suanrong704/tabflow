@@ -1087,47 +1087,194 @@ body {
 
 /* ===== Mobile ===== */
 @media (max-width: 768px) {
-  /* Sidebar overlay */
+  /* ===== Core Layout ===== */
+  body { 
+    flex-direction: column;
+  }
+  
+  /* Sidebar: full-width slide-over */
   .sidebar {
-    position: fixed; left: 0; top: 0; z-index: 200;
+    position: fixed; left: 0; top: 0; bottom: 0;
+    z-index: 300;
+    width: 85vw; max-width: 300px; min-width: 250px;
     box-shadow: var(--shadow-lg);
-    width: 260px; min-width: 260px;
+    transform: translateX(0);
+    transition: transform 0.25s ease;
   }
   .sidebar.collapsed {
-    width: 0; min-width: 0; border: none; overflow: hidden; opacity: 0; pointer-events: none;
+    transform: translateX(-100%);
+    width: 85vw; max-width: 300px; min-width: 250px;
+    opacity: 1; pointer-events: auto;
   }
   
-  /* Chat area */
-  .chat-messages { padding: 12px 16px; }
-  .message { gap: 8px; margin-bottom: 20px; }
-  .message-body { font-size: 14px; }
-  .message.user .message-body { max-width: 85%; }
-  .message-avatar { width: 28px; height: 28px; }
+  /* Backdrop when sidebar is open */
+  .sidebar:not(.collapsed) ~ .main::before {
+    content: "";
+    position: fixed; inset: 0; z-index: 250;
+    background: rgba(0,0,0,0.4);
+  }
+  /* Main needs a pseudo-element for backdrop, but ~ sibling selector won't work here.
+     Instead we use a JS-added class. For now, rely on sidebar covering. */
   
-  /* Input area */
-  .input-container { padding: 8px 10px 12px; }
-  .input-options { padding: 0 2px; gap: 4px; flex-wrap: wrap; }
-  .input-wrapper { gap: 6px; }
-  .chat-input { font-size: 15px; padding: 10px 12px; }
-  
-  /* Hide progress bar on mobile */
-  .nav-progress { display: none !important; }
-  
-  /* Prompt panel full width */
-  .prompt-panel { width: 100vw; right: -100vw; }
-  
-  /* Smaller action buttons */
-  .message-action-btn { padding: 2px 6px; font-size: 11px; }
-  
-  /* Model switcher wrap */
-  .model-switcher { gap: 2px; }
-  .model-btn { padding: 4px 8px; font-size: 12px; }
-  .opt-chip { padding: 4px 8px; font-size: 12px; }
+  /* Main: full width */
+  .main {
+    height: 100vh;
+    height: 100dvh; /* dynamic viewport height for mobile */
+  }
   
   /* Header */
-  .chat-header { padding: 8px 12px; }
+  .chat-header {
+    padding: 8px 12px;
+    min-height: 44px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-toggle-sidebar { padding: 6px; }
   
-  /* Welcome */
+  /* Chat area: take full width */
+  .chat-area { flex: 1; }
+  
+  .chat-messages {
+    max-width: 100%;
+    padding: 12px 12px 0;
+  }
+  
+  /* Messages */
+  .message { gap: 8px; margin-bottom: 16px; }
+  .message-avatar { width: 28px; height: 28px; }
+  .message-body { font-size: 15px; line-height: 1.65; }
+  .message.user .message-body {
+    max-width: 82%;
+    padding: 8px 14px;
+  }
+  
+  /* Hide progress bar */
+  .nav-progress { display: none !important; }
+  
+  /* ===== Input Area ===== */
+  .input-container {
+    padding: 8px 8px 12px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  
+  /* Options bar: scrollable row */
+  .input-options {
+    max-width: 100%;
+    gap: 4px;
+    margin-bottom: 6px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+  .input-options::-webkit-scrollbar { display: none; }
+  
+  .model-switcher { flex-shrink: 0; gap: 2px; }
+  .model-btn { padding: 5px 10px; font-size: 12px; border-radius: 6px; }
+  .opt-chip { padding: 4px 8px; font-size: 12px; white-space: nowrap; flex-shrink: 0; }
+  .thinking-toggle { flex-shrink: 0; }
+  
+  /* Input wrapper */
+  .input-wrapper {
+    display: flex; align-items: flex-end;
+    gap: 6px;
+    background: var(--bg-input);
+    border-radius: 12px;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+  }
+  .input-wrapper:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(77,107,254,0.15);
+  }
+  
+  .chat-input {
+    flex: 1;
+    font-size: 16px; /* prevent iOS zoom on focus */
+    padding: 8px 4px;
+    min-height: 24px;
+    max-height: 120px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-family: var(--font);
+    resize: none;
+    line-height: 1.5;
+  }
+  
+  .tool-btn {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+  .tool-btn:active { background: var(--bg-tertiary); }
+  
+  .btn-send {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all var(--transition);
+  }
+  .btn-send:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-send:not(:disabled):active { background: var(--accent-hover); }
+  
+  .input-tools { display: flex; gap: 2px; align-items: center; flex-shrink: 0; }
+  
+  /* File preview */
+  .file-preview { margin-bottom: 6px; font-size: 12px; }
+  
+  /* Input footer */
+  .input-footer { font-size: 10px; text-align: center; padding: 4px 0 0; }
+  
+  /* ===== Action buttons ===== */
+  .message-action-btn { 
+    padding: 3px 8px; font-size: 12px; 
+    touch-action: manipulation;
+  }
+  
+  /* ===== Prompt panel ===== */
+  .prompt-panel { width: 100vw; right: -100vw; }
+  
+  /* ===== Modal ===== */
+  .modal { width: 90vw; padding: 20px; }
+  
+  /* ===== Welcome ===== */
   .welcome-logo svg { width: 48px; height: 48px; }
   .welcome h2 { font-size: 20px; }
+  .welcome-sub { font-size: 14px; }
+  
+  /* ===== Code blocks ===== */
+  .code-block-wrapper { margin: 8px -12px; border-radius: 0; }
+  pre { font-size: 13px; padding: 12px; }
+  
+  /* ===== Scroll bottom button ===== */
+  .scroll-bottom-btn { right: 12px; bottom: 100px; }
+  
+  /* ===== Reasoning block ===== */
+  .reasoning-block { font-size: 13px; }
+  
+  /* ===== Sidebar footer ===== */
+  .sidebar-footer { padding: 8px 12px; }
+  
+  /* ===== Conversation search ===== */
+  .conv-search { padding: 6px 12px; }
+  .conv-search input { font-size: 14px; padding: 8px 10px; }
+  
+  /* ===== Toast ===== */
+  .toast { font-size: 13px; bottom: 100px; }
+  
+  /* ===== Stop button ===== */
+  .btn-stop { right: 12px; bottom: 100px; }
 }
