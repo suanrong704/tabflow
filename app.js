@@ -156,11 +156,11 @@ async function switchConversation(id) {
 }
 
 async function newConversation() {
-  const conv = await storage.createConversation();
-  state.currentConvId = conv.id;
-  await renderMessages();
-  renderSidebar();
+  state.currentConvId = null;
+  $("chatMessages").innerHTML = "";
   $("welcome").style.display = "flex";
+  $("msgOutline").style.display = "none";
+  renderSidebar();
 }
 
 async function renameConversation(id) {
@@ -215,7 +215,7 @@ function createMessageEl(msg, versionIndex) {
   }
   bodyHtml += wrapCodeBlocks(renderMarkdown(answer));
   const actionsHtml = isUser
-    ? '<button class="message-action-btn" data-action="edit-msg" data-id="' + msg.id + '">' + SVG_EDIT + ' \u7f16\u8f91</button>'
+    ? '<button class="message-action-btn" data-action="copy-msg" data-id="' + msg.id + '">' + SVG_COPY + '</button><button class="message-action-btn" data-action="edit-msg" data-id="' + msg.id + '">' + SVG_EDIT + ' \u7f16\u8f91</button>'
     : '<button class="message-action-btn" data-action="copy-msg" data-id="' + msg.id + '">' + SVG_COPY + ' \u590d\u5236</button><button class="message-action-btn" data-action="regenerate" data-id="' + msg.id + '">' + SVG_REFRESH + ' \u91cd\u65b0\u751f\u6210</button><button class="message-action-btn" data-action="speak-msg" data-id="' + msg.id + '">' + SVG_SPEAK + ' \u6717\u8bfb</button>';
   return '<div class="message ' + (isUser?'user':'assistant') + '" data-id="' + msg.id + '"><div class="message-avatar">' + (isUser ? SVG_USER : SVG_AI) + '</div><div class="message-body">' + bodyHtml + '<div class="message-actions">' + actionsHtml + '</div></div></div>';
 }
@@ -230,7 +230,7 @@ async function renderMessages() {
   $("chatMessages").innerHTML = msgs.map(m => createMessageEl(m, m.versions?.length ? m.versions.length - 1 : undefined)).join("");
   highlightCode();
   attachMessageActions();
-  updateMsgNav();
+  updateMsgOutline();
 }
 
 
@@ -349,43 +349,30 @@ async function regenerateMessage(msgId) {
 }
 
 
-function updateMsgNav() {
-  if (!state.currentConvId) { $("btnMsgNav").style.display = "none"; return; }
+function updateMsgOutline() {
+  if (!state.currentConvId) { $("msgOutline").style.display = "none"; return; }
   const userMsgs = document.querySelectorAll(".message.user");
-  const btn = $("btnMsgNav");
-  btn.style.display = userMsgs.length > 1 ? "" : "none";
-  // Build nav list
-  const list = $("msgNavList");
+  const outline = $("msgOutline");
+  if (userMsgs.length <= 1) { outline.style.display = "none"; return; }
+  outline.style.display = "block";
+  const list = $("msgOutlineList");
   let html = "";
   userMsgs.forEach((el, i) => {
     const body = el.querySelector(".message-body");
-    const text = (body?.textContent || "").replace(/\s+/g, " ").trim().slice(0, 40);
-    html += `<div class="msg-nav-item" data-target="${el.dataset.id}"><span class="nav-num">${i+1}</span>${text || "..."}</div>`;
+    const text = (body?.textContent || "").replace(/\s+/g, " ").trim().slice(0, 30);
+    html += '<div class="msg-outline-item" data-target="' + el.dataset.id + '"><span class="ol-num">' + (i+1) + '</span>' + (text || "...") + '</div>';
   });
   list.innerHTML = html;
-  list.querySelectorAll(".msg-nav-item").forEach(item => {
+  list.querySelectorAll(".msg-outline-item").forEach(item => {
     item.addEventListener("click", () => {
-      const targetId = item.dataset.target;
-      const targetEl = document.querySelector(`.message[data-id="${targetId}"]`);
+      const targetEl = document.querySelector('.message[data-id="' + item.dataset.target + '"]');
       if (targetEl) {
         targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
         targetEl.classList.add("flash-highlight");
         setTimeout(() => targetEl.classList.remove("flash-highlight"), 700);
       }
-      $("msgNavPopup").style.display = "none";
     });
   });
-}
-
-// Add navigation toggle
-function toggleMsgNav() {
-  const popup = $("msgNavPopup");
-  if (popup.style.display === "none") {
-    updateMsgNav();
-    popup.style.display = "flex";
-  } else {
-    popup.style.display = "none";
-  }
 }
 function checkAutoScroll() {
   const area = $("chatArea");
@@ -836,16 +823,6 @@ function init() {
   $("btnExportConv").addEventListener("click", exportConversation);
 
   // Auto-scroll
-  // Message navigation
-  $("btnMsgNav").addEventListener("click", toggleMsgNav);
-  $("btnCloseMsgNav").addEventListener("click", () => { $("msgNavPopup").style.display = "none"; });
-  // Close popup on outside click
-  document.addEventListener("click", (e) => {
-    if (!$("msgNavPopup").contains(e.target) && e.target !== $("btnMsgNav") && !$("btnMsgNav").contains(e.target)) {
-      $("msgNavPopup").style.display = "none";
-    }
-  });
-
   $("btnScrollBottom").addEventListener("click", scrollToBottom);
   $("chatArea").addEventListener("scroll", checkAutoScroll);
 
