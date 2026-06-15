@@ -57,13 +57,14 @@
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="icon-moon" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       主题
     </button>
-  </div>
-
     <button class="sidebar-footer-item" id="btnPersona" title="身份/人设">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       <span id="personaStatus">人设 · 未设定</span>
     </button>
-    <div class="sidebar-avatars">
+  </div>
+
+
+<div class="sidebar-avatars">
     <div class="avatar-row">
       <span class="avatar-label">用户</span>
       <div class="avatar-pick" id="userAvatarPick" title="用户头像">
@@ -275,5 +276,18 @@ if ("serviceWorker" in navigator) {
     Max
   </button>
 </div>
+
+  <!-- Persona Modal -->
+  <div class="modal-overlay" id="personaModal">
+    <div class="modal">
+      <h3>身份 / 人设</h3>
+      <p class="modal-desc">让 AI 以特定身份或风格回复。例如："你是一位古汉语专家，用文言文回复"、"你是一位毒舌的代码审查员"</p>
+      <textarea id="personaInput" rows="4" placeholder="输入人设描述..." class="modal-textarea"></textarea>
+      <div class="modal-buttons">
+        <button class="btn-cancel" id="btnPersonaCancel">取消</button>
+        <button class="btn-save" id="btnPersonaSave">保存</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
