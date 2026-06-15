@@ -1084,30 +1084,50 @@ body {
 }
 
 /* Mobile */
-@media (max-width: 768px) {
-  .sidebar {
-    position: fixed; left: 0; top: 0; z-index: 200; box-shadow: var(--shadow-lg);
-  }
-  .sidebar.collapsed { width: 0; min-width: 0; border: none; overflow: hidden; opacity: 0; pointer-events: none; }
-  .chat-messages { padding: 12px; }
-  .input-container { padding: 8px 10px 10px; }
-  .message.user .message-body { max-width: 90%; }
-  .input-options { padding: 0 4px; }
-  .prompt-panel { width: 100vw; right: -100vw; }
-}
 
-/* ===== Responsive ===== */
+/* ===== Mobile ===== */
 @media (max-width: 768px) {
-  .sidebar { position: fixed; left: 0; top: 0; z-index: 200; box-shadow: var(--shadow-lg); }
+  /* Sidebar overlay */
+  .sidebar {
+    position: fixed; left: 0; top: 0; z-index: 200;
+    box-shadow: var(--shadow-lg);
+    width: 260px; min-width: 260px;
+  }
   .sidebar.collapsed {
-  width: 0;
-  min-width: 0;
-  border: none;
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
-}
-  .chat-messages { padding: 16px; }
-  .input-container { padding: 8px 12px 12px; }
-  .message.user .message-body { max-width: 90%; }
+    width: 0; min-width: 0; border: none; overflow: hidden; opacity: 0; pointer-events: none;
+  }
+  
+  /* Chat area */
+  .chat-messages { padding: 12px 16px; }
+  .message { gap: 8px; margin-bottom: 20px; }
+  .message-body { font-size: 14px; }
+  .message.user .message-body { max-width: 85%; }
+  .message-avatar { width: 28px; height: 28px; }
+  
+  /* Input area */
+  .input-container { padding: 8px 10px 12px; }
+  .input-options { padding: 0 2px; gap: 4px; flex-wrap: wrap; }
+  .input-wrapper { gap: 6px; }
+  .chat-input { font-size: 15px; padding: 10px 12px; }
+  
+  /* Hide progress bar on mobile */
+  .nav-progress { display: none !important; }
+  
+  /* Prompt panel full width */
+  .prompt-panel { width: 100vw; right: -100vw; }
+  
+  /* Smaller action buttons */
+  .message-action-btn { padding: 2px 6px; font-size: 11px; }
+  
+  /* Model switcher wrap */
+  .model-switcher { gap: 2px; }
+  .model-btn { padding: 4px 8px; font-size: 12px; }
+  .opt-chip { padding: 4px 8px; font-size: 12px; }
+  
+  /* Header */
+  .chat-header { padding: 8px 12px; }
+  
+  /* Welcome */
+  .welcome-logo svg { width: 48px; height: 48px; }
+  .welcome h2 { font-size: 20px; }
 }
