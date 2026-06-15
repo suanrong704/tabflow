@@ -1122,6 +1122,15 @@ body {
 }
 .msg-outline-list { display: flex; flex-direction: column; gap: 2px; }
 .msg-outline-item:hover { background: var(--bg-sidebar-hover); color: var(--text-primary); }
+.nav-progress {
+  position: fixed;
+  right: 6px;
+  top: 48px;
+  bottom: 140px;
+  width: 30px;
+  z-index: 100;
+  pointer-events: none;
+}
 .msg-outline-item .nav-progress {
   position: fixed;
   right: 6px;
